@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+
 try:
     from roslint import cpplint_wrapper
 except ImportError:

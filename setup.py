@@ -1,9 +1,18 @@
-from distutils.core import setup
-from catkin_pkg.python_setup import generate_distutils_setup
+from setuptools import setup, find_packages
 
-setup(**generate_distutils_setup(
-    packages=['roslint'],
-    package_dir={
-      '': 'src'
-      }
-))
+setup(
+    name='roslint',
+    version='0.11.2',
+    description='pip roslint',
+    url='https://github.com/at-wat/roslint-pip',
+    author='anonymous',
+    author_email='anonymous@foo',
+    packages=find_packages(exclude=['tests', 'cmake']),
+    entry_points={
+        'console_scripts': [
+            'roslint-cpplint = roslint.roslint_cpplint',
+            'roslint-pep8 = roslint.roslint_pep8'
+        ]
+    },
+    license="BSD"
+)
