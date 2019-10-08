@@ -10,8 +10,8 @@ setup(
     packages=find_packages(exclude=['tests', 'cmake']),
     entry_points={
         'console_scripts': [
-            'roslint-cpplint = roslint.roslint_cpplint',
-            'roslint-pep8 = roslint.roslint_pep8'
+            'roslint-cpplint = roslint.roslint_cpplint:main',
+            'roslint-pep8 = roslint.roslint_pep8:main'
         ]
     },
     license="BSD"
