@@ -30,12 +30,13 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from roslint import cpplint
-from roslint.cpplint import Match, IsBlankLine, main
+from . import cpplint
+from .cpplint import Match, IsBlankLine, main
 from functools import partial
 
 import os.path
 import re
+import sys
 
 # Line length as per the ROS C++ Style Guide
 cpplint._line_length = 120
@@ -76,7 +77,7 @@ def GetHeaderGuardCPPVariable(fn, filename):
     while head:
         head, tail = os.path.split(head)
         var_parts.insert(0, tail)
-        if head.endswith('include') or tail == "":
+        if head.endswith('include') or os.path.exists(os.path.join(head, "package.xml")) or tail == "":
             break
     return re.sub(r'[-./\s]', '_', "_".join(var_parts)).upper()
 
@@ -141,7 +142,7 @@ def ProcessLine(fn, filename, file_extension, clean_lines, line,
 def CheckEmptyBlockBody(fn, filename, clean_lines, linenum, error):
     """ Look for empty loop/conditional body with only a single semicolon,
         but allow ros-style do while loops. """
-    from cpplint import CloseExpression
+    from roslint.cpplint import CloseExpression
 
     # Search for loop keywords at the beginning of the line.  Because only
     # whitespaces are allowed before the keywords, this will also ignore most
@@ -165,7 +166,7 @@ def CheckEmptyBlockBody(fn, filename, clean_lines, linenum, error):
                 error(filename, end_linenum,
                       'whitespace/empty_conditional_body', 5,
                       'Empty conditional bodies should use {}')
-            elif matched.group(1) == 'while' and linenum is not 0 \
+            elif matched.group(1) == 'while' and linenum != 0 \
                     and "}" in clean_lines.elided[linenum-1]:
                 # Don't report an error for ros style do-whiles. Works
                 # by checking for a closing brace on the previous
@@ -175,3 +176,8 @@ def CheckEmptyBlockBody(fn, filename, clean_lines, linenum, error):
             else:
                 error(filename, end_linenum, 'whitespace/empty_loop_body', 5,
                       'Empty loop bodies should use {} or continue')
+
+
+if __name__ == '__main__':
+    sys.argv.insert(1, "--filter=-runtime/references")
+    main()
