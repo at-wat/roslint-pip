@@ -7,7 +7,8 @@ setup(
     url='https://github.com/at-wat/roslint-pip',
     author='anonymous',
     author_email='anonymous@foo',
-    packages=find_packages(exclude=['tests', 'cmake']),
+    package_dir={'': 'src'},
+    packages=['roslint'],
     entry_points={
         'console_scripts': [
             'roslint-cpplint = roslint.roslint_cpplint:main',
